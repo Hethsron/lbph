@@ -57,7 +57,7 @@ For developement, before running the application, you need to create your own vi
 4. Install requirements :
 
     ```console
-        $ pip3 install -r requirements
+        $ pip3 install -r requirements.txt
     ```
 
 5. Run the application
