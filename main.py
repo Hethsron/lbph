@@ -56,6 +56,7 @@ from art import tprint
 from lbph.core.capture import shooting
 from lbph.core.train import training
 from lbph.core.recognize import recognition
+from lbph.core.access import argv
 from getopt import getopt, GetoptError
 
 class mwoo(object):
@@ -96,7 +97,7 @@ class mwoo(object):
             @brief  Parse and interpret options.
         """
         try:
-            opts, args = getopt(sys.argv[1:], 'chtrv', [ 'capture', 'help', 'train', 'recognize', 'version' ])
+            opts, args = getopt(sys.argv[1:], 'chi:trv', [ 'capture', 'help', 'image=', 'train', 'recognize', 'version' ])
         except GetoptError as err:
             print(err)
 
@@ -120,6 +121,14 @@ class mwoo(object):
                 else:
                 # Built-in assert statement to find errors
                     assert False, 'The command does not run if the argument is provided'
+            elif o in ('-i', '--image'):
+                # Check if given argument is a valid readable image
+                if argv.is_image(given_argv = a):
+                    # Built-in tracking
+                    recognition.fromImage(id = 1, image_source = a)
+                else:
+                    # Built-in assert statement to find errors
+                    assert False, 'Invalid argument'
             elif o in ('-t', '--train'):
                 # Check if there is no argument
                 if not args:
@@ -130,7 +139,7 @@ class mwoo(object):
             elif o in ('-r', '--recognize'):
                 # Check if there is no argument
                 if not args:
-                    recognition.make(id = 1, video_source = 0)
+                    recognition.fromStream(id = 1, video_source = 0)
                 else:
                     # Built-in assert statement to find errors
                     assert False, 'The command does not run if the argument is provided'

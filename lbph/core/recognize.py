@@ -64,12 +64,12 @@ class recognition(object):
     """
 
     @staticmethod
-    def make(id = None, video_source = None):
+    def fromStream(id = None, video_source = None):
         """!
-            @fn     make
+            @fn     fromStream
             @brief  Perform face recognition process
 
-            @param[in]      id          The number of persons you want to include (e.g. Yassine, Hethsron)
+            @param[in]      id                  The number of persons you want to include (e.g. Yassine, Hethsron)
             @param[in]      video_source        Source video file to capture frame by frame 
         """
 
@@ -85,7 +85,8 @@ class recognition(object):
         prev_frame_time = 0
         new_frame_time = 0
 
-        names = ['', 'Hethsron' ]  # key in names, start from the second place, leave first empty
+        # key in names, start from the second place, leave first empty
+        names = ['', 'Hethsron' ]
 
         # Create a VideoCapture object
         cap = cv2.VideoCapture(video_source)
@@ -149,4 +150,73 @@ class recognition(object):
         # Do a bit of cleanup
         print("[+] End Of Recognition Process")
         cap.release()
+        cv2.destroyAllWindows()
+
+    @staticmethod
+    def fromImage(id = None, image_source = None):
+        """!
+            @fn     fromImage
+            @brief  Perform face recognition process
+
+            @param[in]      id                  The number of persons you want to include (e.g. Yassine, Hethsron)
+            @param[in]      image_source        Source image file to capture frame by frame 
+        """
+
+        # Create LBPH face recognizer algorithm
+        recognizer = cv2.face.LBPHFaceRecognizer_create()
+
+        # Load pre-trained model
+        recognizer.read('models/mwoo.yml')
+        
+        # Load Haar classifier
+        detector = cv2.CascadeClassifier('res/haarcascade_frontalface_default.xml');
+
+        prev_frame_time = 0
+        new_frame_time = 0
+
+        # key in names, start from the second place, leave first empty
+        names = ['', 'Hethsron' ] 
+
+        # Read an image with its default color
+        img = cv2.imread(image_source)
+
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        new_frame_time  = time.time()
+        fps = 1 / (new_frame_time - prev_frame_time)
+        prev_frame_time = new_frame_time
+        fps = int(fps) 
+        fps = str(fps) 
+        cv2.putText(img, fps, (7, 70), cv2.FONT_HERSHEY_SIMPLEX, 3, (100, 255, 0), 3, cv2.LINE_AA)
+
+        faces = detector.detectMultiScale(
+            gray,
+            scaleFactor=1.2,
+            minNeighbors=5,
+            minSize=(30, 30),
+        )
+
+        for (x, y, w, h) in faces:
+
+            cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
+            id, confidence = recognizer.predict(gray[y:y + h, x:x + w])
+
+            # Check if confidence is less then 100 ==> "0" is perfect match
+            if (confidence < 100):
+                id = names[id]
+                confidence = "  {0}%".format(round(100 - confidence))
+            else:
+                id = "unknown"
+                confidence = "  {0}%".format(round(100 - confidence))
+
+            cv2.putText(img, str(id), (x + 5, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+            cv2.putText(img, str(confidence), (x + 5, y + h - 5), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 0), 1)
+
+        cv2.imshow('<-> MWOO <->', img)
+        
+        # Check user interruptions
+        cv2.waitKey(0)
+
+        # Do a bit of cleanup
+        print("[+] End Of Recognition Process")
         cv2.destroyAllWindows()

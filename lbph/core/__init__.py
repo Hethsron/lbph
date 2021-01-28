@@ -29,6 +29,7 @@
 """
 
 __all__     = [
+    'access',
     'capture',
     'recognize',
     'train'
