@@ -1,0 +1,14 @@
+**/__pycache__
+**/[Bb]in
+**/[Dd]atasets/train
+**/[Dd]atasets/validation
+**/[Dd]ocs
+**/[Ii]nclude
+**/[Ll]ib
+**/[Ll]ib64
+**/[Mm]odels/mwoo_model.h5
+**/[Ss]hare
+**/[Ss]cripts
+**/env
+**/pyvenv.cfg
+**/.venv
