@@ -113,7 +113,7 @@ class recognition(object):
             fps = 1 / (new_frame_time - prev_frame_time)
             prev_frame_time = new_frame_time
             fps = int(fps) 
-            fps = str(fps) 
+            fps = str(fps)
             cv2.putText(img, fps, (7, 70), cv2.FONT_HERSHEY_SIMPLEX, 3, (100, 255, 0), 3, cv2.LINE_AA)
 
             faces = detector.detectMultiScale(
@@ -127,6 +127,7 @@ class recognition(object):
 
                 cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
+                # What you get as "confidence", is actually the opposite - the distance to the closest item in the database.
                 id, confidence = recognizer.predict(gray[y:y + h, x:x + w])
 
                 # Check if confidence is less then 100 ==> "0" is perfect match

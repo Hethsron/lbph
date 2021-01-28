@@ -1,0 +1,61 @@
+.\" Manpage for LBPH.
+.\" Contact hethsron-jedael.boueya@uha.fr to correct errors or typos.
+.TH LBPH 8 "23th October 2020" "0.0.1" "User Commands"
+.SH NAME
+.B LBPH
+\- starting facial recognition 
+.SH SYNOPSIS
+.B main.py
+.RI "[OPTION] ... [SOURCE] ..."
+.SH DESCRIPTION
+.B LBPH
+is a facial recognition software based on machine learning and LBPH algorithm, whose objective is, from the incoming image, to find a series of data of the same face in a set of training images in a database.
+.SH OPTIONS
+.B LBP
+take some options. Mandatory arguments to long options are mandatory for short options too.
+.TP
+.B -c, --capture
+capture 50 pictures of specific person from camera
+.TP
+.B -h, --help
+display this help and exit
+.TP
+.B -i, --image
+identify a person from a digital image (from [SOURCE] that could be a JPEG or JPG file)
+.TP
+.B -r, --recognize
+identify a person from a streaming from connected camera device
+.TP
+.B -t, --train
+train the model with pre-classified samples of images
+.TP
+.B -v, --version
+display the version of the software and exit
+.SH EXAMPLES
+Some examples of common usage.
+.SH NOTES
+All above options are not muttually exclusive and cannot be used together.
+.SH EXIT STATUS
+If requirements are not installed on the system, this program will end with exit status.
+.SH SEE ALSO
+Full documentation at : <https://github.com/Hethsron/lbph>
+.SH REPORTING BUGS
+No known bugs.
+.SH AUTHOR
+Written and maintained by Hethsron Jedael BOUEYA (hethsron-jedael.boueya@uha.fr)
+.SH COPYRIGHT
+Copyright (C) 2020  Hethsron Jedael BOUEYA
+.PP
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+.PP
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+.PP
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA

@@ -59,6 +59,12 @@ For developement, before running the application, you need to create your own vi
     ```console
         $ pip3 install -r requirements.txt
     ```
+    
+    On Raspberry Pi 3+ only, run :
+
+    ```console
+        $ pip3 install -r requirements.1.txt
+    ```
 
 5. Run the application
 
