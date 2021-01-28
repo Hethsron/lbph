@@ -54,6 +54,7 @@
 
 import cv2, os, time
 import numpy as np
+from lbph.core.train import training
 
 class recognition(object):
     """!
@@ -86,7 +87,7 @@ class recognition(object):
         new_frame_time = 0
 
         # key in names, start from the second place, leave first empty
-        names = ['', 'Hethsron' ]
+        _, _, names = training.build_labels(datasets_path = 'datasets')
 
         # Create a VideoCapture object
         cap = cv2.VideoCapture(video_source)
@@ -175,7 +176,7 @@ class recognition(object):
         new_frame_time = 0
 
         # key in names, start from the second place, leave first empty
-        names = ['', 'Hethsron' ] 
+        _, _, names = training.build_labels(datasets_path = 'datasets')
 
         # Read an image with its default color
         img = cv2.imread(image_source)

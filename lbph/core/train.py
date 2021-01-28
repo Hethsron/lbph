@@ -65,37 +65,39 @@ class training(object):
     """
 
     @staticmethod
-    def __build_labels__(datasets_path = None, detector = None):
+    def build_labels(datasets_path = None):
         """!
             @fn     __build_labels__
             @brief  Get images and label data
 
              @param[in]      datasets_path        Relative of Absolute path to the datasets
-             @param[in]      detector             Haar Cascade classifier detector
+             @return         images, labels, dict_labels
         """
+
+        # Define face samples
+        images = []
+
+        # Define face labels
+        labels = []
+
+        # Define labels dictionnary
+        dict_labels = {}
+
+        # Get peoples
+        people = [person for person in os.listdir('datasets')]
+
+        for i, person in enumerate(people):
+            # Append person to dictionnay
+            dict_labels[i] = person
+
+            for image in os.listdir('datasets/' + person):
+                images.append(cv2.imread('datasets/' + person + '/' + image, 0))
+                labels.append(i)
         
-        # Get images paths
-        imagePaths = [os.path.join(datasets_path, f) for f in os.listdir(datasets_path)]
+        # Creates numpy array of collected labels
+        labels = np.array(labels)
 
-        # Create an empty list of face samples  
-        faceSamples = []
-
-        # Create an empty list of labels
-        ids = []
-
-        for imagePath in imagePaths:
-            PIL_img = Image.open(imagePath).convert('L')
-            img_numpy = np.array(PIL_img,'uint8')
-
-            id = int(os.path.split(imagePath)[-1].split(".")[1])
-            faces = detector.detectMultiScale(img_numpy)
-        
-            for (x,y,w,h) in faces:
-                faceSamples.append(img_numpy[y:y+h,x:x+w])
-                ids.append(id)
-        
-        # Return images and labels
-        return faceSamples, ids
+        return images, labels, dict_labels
  
     @staticmethod
     def make(datasets_path = None):
@@ -117,7 +119,7 @@ class training(object):
         print("[+] It Will Take A Few Seconds. Wait  ...")
 
         # Get images and labels data
-        faces, ids = training.__build_labels__(datasets_path = datasets_path, detector = detector)
+        faces, ids, _ = training.build_labels(datasets_path = datasets_path)
         recognizer.train(faces, np.array(ids))
 
         # Save the model into models/mwoo.yml

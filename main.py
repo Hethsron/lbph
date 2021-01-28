@@ -137,7 +137,7 @@ class mwoo(object):
                     # Built-in assert statement to find errors
                     assert False, 'The command does not run if the argument is provided'
             elif o in ('-r', '--recognize'):
-                # Check if there is no argument
+                # Check if given argument is a valid integer
                 if not args:
                     recognition.fromStream(id = 1, video_source = 0)
                 else:
