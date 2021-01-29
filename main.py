@@ -125,7 +125,7 @@ class mwoo(object):
                 # Check if given argument is a valid readable image
                 if argv.is_image(given_argv = a):
                     # Built-in tracking
-                    recognition.fromImage(id = 1, image_source = a)
+                    recognition.fromImage(image_source = a)
                 else:
                     # Built-in assert statement to find errors
                     assert False, 'Invalid argument'
@@ -139,7 +139,7 @@ class mwoo(object):
             elif o in ('-r', '--recognize'):
                 # Check if given argument is a valid integer
                 if not args:
-                    recognition.fromStream(id = 1, video_source = 0)
+                    recognition.fromStream(video_source = 0)
                 else:
                     # Built-in assert statement to find errors
                     assert False, 'The command does not run if the argument is provided'

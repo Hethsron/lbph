@@ -65,12 +65,11 @@ class recognition(object):
     """
 
     @staticmethod
-    def fromStream(id = None, video_source = None):
+    def fromStream(video_source = None):
         """!
-            @fn     fromStream
-            @brief  Perform face recognition process
+            @fn             fromStream
+            @brief          Perform face recognition process
 
-            @param[in]      id                  The number of persons you want to include (e.g. Yassine, Hethsron)
             @param[in]      video_source        Source video file to capture frame by frame 
         """
 
@@ -80,8 +79,11 @@ class recognition(object):
         # Load pre-trained model
         recognizer.read('models/mwoo.yml')
         
-        # Load Haar classifier
-        detector = cv2.CascadeClassifier('res/haarcascade_frontalface_default.xml');
+        # Load front Haar Classifier
+        front_detector = cv2.CascadeClassifier('res/haarcascade_frontalface_default.xml')
+
+        # Load profile Haar Classifier
+        profile_detector = cv2.CascadeClassifier('res/haarcascade_profileface.xml')
 
         prev_frame_time = 0
         new_frame_time = 0
@@ -116,15 +118,25 @@ class recognition(object):
             fps = str(fps)
             cv2.putText(img, fps, (7, 70), cv2.FONT_HERSHEY_SIMPLEX, 3, (100, 255, 0), 3, cv2.LINE_AA)
 
-            faces = detector.detectMultiScale(
+            # Detects objects of different sizes in the input image and return as a list of rectangles
+            faces = front_detector.detectMultiScale(
                 gray,
-                scaleFactor=1.2,
-                minNeighbors=5,
-                minSize=(int(minW), int(minH)),
+                scaleFactor = 1.2,
+                minNeighbors = 5,
+                minSize = (int(minW), int(minH))
             )
 
-            for (x, y, w, h) in faces:
+            # Check if list of rectangles is empty
+            if not len(faces):
+                faces = profile_detector.detectMultiScale(
+                    gray,
+                    scaleFactor = 1.2,
+                    minNeighbors = 5,
+                    minSize = (int(minW), int(minH))
+                )
 
+            for (x, y, w, h) in faces:
+                # Draw rectangle around detected face
                 cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
                 # What you get as "confidence", is actually the opposite - the distance to the closest item in the database.
@@ -138,6 +150,7 @@ class recognition(object):
                     id = "unknown"
                     confidence = "  {0}%".format(round(100 - confidence))
 
+                # Put name and confidence
                 cv2.putText(img, str(id), (x + 5, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
                 cv2.putText(img, str(confidence), (x + 5, y + h - 5), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 0), 1)
 
@@ -155,12 +168,11 @@ class recognition(object):
         cv2.destroyAllWindows()
 
     @staticmethod
-    def fromImage(id = None, image_source = None):
+    def fromImage(image_source = None):
         """!
-            @fn     fromImage
-            @brief  Perform face recognition process
+            @fn             fromImage
+            @brief          Perform face recognition process
 
-            @param[in]      id                  The number of persons you want to include (e.g. Yassine, Hethsron)
             @param[in]      image_source        Source image file to capture frame by frame 
         """
 
@@ -170,8 +182,11 @@ class recognition(object):
         # Load pre-trained model
         recognizer.read('models/mwoo.yml')
         
-        # Load Haar classifier
-        detector = cv2.CascadeClassifier('res/haarcascade_frontalface_default.xml');
+        # Load front Haar classifier
+        front_detector = cv2.CascadeClassifier('res/haarcascade_frontalface_default.xml')
+
+        # Load profile Haar Classifier
+        profile_detector = cv2.CascadeClassifier('res/haarcascade_profileface.xml')
 
         prev_frame_time = 0
         new_frame_time = 0
@@ -190,17 +205,28 @@ class recognition(object):
         fps = str(fps) 
         cv2.putText(img, fps, (7, 70), cv2.FONT_HERSHEY_SIMPLEX, 3, (100, 255, 0), 3, cv2.LINE_AA)
 
-        faces = detector.detectMultiScale(
+        # Detects objects of different sizes in the input image and return as a list of rectangles
+        faces = front_detector.detectMultiScale(
             gray,
-            scaleFactor=1.2,
-            minNeighbors=5,
-            minSize=(30, 30),
+            scaleFactor = 1.2,
+            minNeighbors = 5,
+            minSize = (int(minW), int(minH))
         )
 
-        for (x, y, w, h) in faces:
+        # Check if list of rectangles is empty
+        if not len(faces):
+            faces = profile_detector.detectMultiScale(
+                gray,
+                scaleFactor = 1.2,
+                minNeighbors = 5,
+                minSize = (int(minW), int(minH))
+            )
 
+        for (x, y, w, h) in faces:
+            # Draw rectangle around detected face
             cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
+            # What you get as "confidence", is actually the opposite - the distance to the closest item in the database.
             id, confidence = recognizer.predict(gray[y:y + h, x:x + w])
 
             # Check if confidence is less then 100 ==> "0" is perfect match
@@ -211,6 +237,7 @@ class recognition(object):
                 id = "unknown"
                 confidence = "  {0}%".format(round(100 - confidence))
 
+            # Put name and confidence
             cv2.putText(img, str(id), (x + 5, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
             cv2.putText(img, str(confidence), (x + 5, y + h - 5), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 0), 1)
 
