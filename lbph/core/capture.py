@@ -63,16 +63,24 @@ class shooting(object):
     """
 
     @staticmethod
-    def __take__(cap = None, path = None, detector = None, lower = int(), upper = int()):
+    def __take__(video_source = None, path = None, detector = None, lower = int(), upper = int()):
         """!
             @fn             __take__
             @brief          Take shooting photo for training process
-            @param[in]      cap                 VideoCapture object
+
+            @param[in]      video_source        Source video file to capture frame by frame
             @param[in]      path                Directory of images
             @param[in]      detector            Haar Cascade classifier
             @param[in]      lower               Lower bound interval of face count
             @param[in]      upper               Upper bound interval of face count
         """
+
+        # Create a VideoCapture object
+        cap = cv2.VideoCapture(video_source)
+
+        # Define video resolution (width * height)
+        cap.set(3, 640)
+        cap.set(4, 480)
 
         # Initialize individual sampling face count
         counter = lower
@@ -101,8 +109,10 @@ class shooting(object):
             elif counter >= upper:
                 # Take faces sample and stop video
                 break
-
-        return cap
+        
+        # Do a bit of cleanup
+        cap.release()
+        cv2.destroyAllWindows()
 
     @staticmethod
     def make(video_source = None):
@@ -111,16 +121,6 @@ class shooting(object):
             @brief          Capture live stream and make shooting photo for training process
             @param[in]      video_source        Source video file to capture frame by frame  
         """
-
-        # Create a VideoCapture object
-        cap = cv2.VideoCapture(video_source)
-
-        # Define video resolution (width * height)
-        cap.set(3, 640)
-        cap.set(4, 480)
-
-        # Load Haar classifier
-        detector = cv2.CascadeClassifier('res/haarcascade_frontalface_default.xml')
 
         # Take the name of new person
         name = input('[+] What Is The Name Of New Person To Add ?  ').lower()
@@ -140,7 +140,7 @@ class shooting(object):
 
             # Take front pictures
             print('[+] Take front pictures ...')
-            cap = shooting.__take__(cap = cap, 
+            shooting.__take__(video_source = video_source, 
                                 path = path, 
                                 detector = cv2.CascadeClassifier('res/haarcascade_frontalface_default.xml'),
                                 lower = 0,
@@ -148,7 +148,7 @@ class shooting(object):
 
             # Take profile pictures
             print('[+] Take profile pictures ...')
-            cap = shooting.__take__(cap = cap, 
+            shooting.__take__(video_source = video_source, 
                                 path = path, 
                                 detector = cv2.CascadeClassifier('res/haarcascade_profileface.xml'),
                                 lower = 25,
@@ -156,9 +156,6 @@ class shooting(object):
 
             # Do a bit of cleanup
             print('[+] End Of The Capturing Process')
-            cap.release()
-            cv2.destroyAllWindows()
-            pass
         else:
             print('[-] This Person Already Exists In The Datasets')
             pass
