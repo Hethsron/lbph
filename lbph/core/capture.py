@@ -63,11 +63,52 @@ class shooting(object):
     """
 
     @staticmethod
+    def __take__(cap = None, path = None, detector = None, lower = int(), upper = int()):
+        """!
+            @fn             __take__
+            @brief          Take shooting photo for training process
+            @param[in]      cap                 VideoCapture object
+            @param[in]      path                Directory of images
+            @param[in]      detector            Haar Cascade classifier
+            @param[in]      lower               Lower bound interval of face count
+            @param[in]      upper               Upper bound interval of face count
+        """
+
+        # Initialize individual sampling face count
+        counter = lower
+
+        # Start detect your face and take 50 pictures
+        while(True):
+            # Read image
+            ret, img = cap.read()
+
+            # Convert the image to grayscale
+            gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+            faces = detector.detectMultiScale(gray, 1.3, 5)
+            for (x, y, w, h) in faces:
+                cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)     
+                counter += 1
+
+                # Save the captured image into the datasets folder
+                cv2.imwrite(path + '/' + str(counter) + '.jpg', gray[y:y + h, x:x + w])
+                cv2.imshow('<-> MWOO <->', img)
+
+            # Check user interruptions
+            # Press 'ESC' for exiting video
+            k = cv2.waitKey(100) & 0xff
+            if k == 27:
+                break
+            elif counter >= upper:
+                # Take faces sample and stop video
+                break
+
+        return cap
+
+    @staticmethod
     def make(video_source = None):
         """!
-            @fn     make
-            @brief  Capture live stream and make shooting photo for training process
-
+            @fn             make
+            @brief          Capture live stream and make shooting photo for training process
             @param[in]      video_source        Source video file to capture frame by frame  
         """
 
@@ -90,43 +131,31 @@ class shooting(object):
         # Check if the data for the given person already exist
         if not os.path.exists(path):
              # Displaying message
-            print("[+] Initiating The Shooting Process ...")
-            print("[+] Look At The Camera ...")
+            print('[+] Initiating The Shooting Process ...')
+            print('[+] Look At The Camera ...')
             input('[+] We Are Going To Take 50 Pictures. Press [ENTER] When You Are Ready ...')
 
             # Create new folder
             os.mkdir(path)
 
-            # Initialize individual sampling face count
-            counter = 0
+            # Take front pictures
+            print('[+] Take front pictures ...')
+            cap = shooting.__take__(cap = cap, 
+                                path = path, 
+                                detector = cv2.CascadeClassifier('res/haarcascade_frontalface_default.xml'),
+                                lower = 0,
+                                upper = 25)
 
-            # Start detect your face and take 30 pictures
-            while(True):
-                # Read image
-                ret, img = cap.read()
-
-                # Convert the image to grayscale
-                gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-                faces = detector.detectMultiScale(gray, 1.3, 5)
-                for (x,y,w,h) in faces:
-                    cv2.rectangle(img, (x,y), (x + w, y + h), (255, 0, 0), 2)     
-                    counter += 1
-
-                    # Save the captured image into the datasets folder
-                    cv2.imwrite(path + '/' + str(counter) + ".jpg", gray[y:y + h, x:x + w])
-                    cv2.imshow('<-> MWOO <->', img)
-
-                # Check user interruptions
-                # Press 'ESC' for exiting video
-                k = cv2.waitKey(100) & 0xff
-                if k == 27:
-                    break
-                elif counter >= 50:
-                    # Take 50 face sample and stop video
-                    break
+            # Take profile pictures
+            print('[+] Take profile pictures ...')
+            cap = shooting.__take__(cap = cap, 
+                                path = path, 
+                                detector = cv2.CascadeClassifier('res/haarcascade_profileface.xml'),
+                                lower = 25,
+                                upper = 50)
 
             # Do a bit of cleanup
-            print("[+] End Of The Capturing Process")
+            print('[+] End Of The Capturing Process')
             cap.release()
             cv2.destroyAllWindows()
             pass
