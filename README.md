@@ -104,3 +104,7 @@ To commit your changes and push it on `master` branch to GitHub, it is necessary
 ## Contributing change
 
 Please read the [`CONTRIBUTING.md`](CONTRIBUTING.md) for details on how to contribute to this project.
+
+## Doing Work Based In Research
+
+![LBPH based Enhanced Real Time Face Recognition](LBPH.pdf)
