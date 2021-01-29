@@ -88,7 +88,7 @@ For development, before committing the changes on the `master` branch, it is nec
     **/[Ii]nclude
     **/[Ll]ib
     **/[Ll]ib64
-    **/[Mm]odels/mwoo_model.h5
+    **/[Mm]odels/mwoo.yml
     **/[Ss]hare
     **/[Ss]cripts
     **/env
